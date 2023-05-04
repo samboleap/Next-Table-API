@@ -1,18 +1,19 @@
-import { useState } from "react"
-import Layout from "./layout";
-
+const {useState} = require('react');
+const {default: Layout} = require('../../components/layout');
+import DataTable from 'react-data-table-component';
 
 
 export default function TbProducts(){
-    const [products, setProduct] = useState([])
-    fetch(`https://api.escuelajs.co/api/v1/products`)
+    const dataTable = 'https://api.escuelajs.co/api/v1/products'
+    const [product, setProduct] = useState([])
+    fetch(dataTable)
     .then(res=> res.json())
     .then(items=> setProduct(items))
 
     const columns = [
         {
             name: 'Product Name',
-            title: 'product name',
+            title: 'title',
             selector: row => row.title
         },
         {
@@ -22,8 +23,8 @@ export default function TbProducts(){
         },
         {
             name: 'Category',
-            category: 'category',
-            selector: row => row.category
+            description: 'description',
+            selector: row => row.description
         },
         {
             name: 'Photos',
@@ -46,17 +47,17 @@ export default function TbProducts(){
         },
     ]
     function sortData(e){
-        const listItem = products.filter((row)=>{
+        const listItem = product.filter((row)=>{
             return row.title.toLowerCase().includes(e.target.value.toLowerCase());
         });
         setProduct(listItem);
     }
     return (
         <Layout product>
-            <div className="container">
-                <DataTable columns={columns} data={products}
+            <div className="container mt-5">
+                <DataTable columns={columns} data={product}
                 title="All Product Listing"
-                pageination
+                pagination
                 highlightOnHover
                 fixedHeader
                 actions={
