@@ -1,11 +1,12 @@
 import Head from 'next/head'
 import Layout from '@/components/layout'
 import { Inter } from 'next/font/google'
+import TbComponents from '@/components/tbproducts'
 
 
 const inter = Inter({ subsets: ['latin'] })
 
-export default function Home({ products }) {
+export default function Home() {
   return (
     <>
       <Layout>
@@ -16,76 +17,8 @@ export default function Home({ products }) {
           <link rel="icon" href="/favicon.ico" />
           <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous"></link>
         </Head>
-<h1 style={text1}>Prodoct Collection - Table</h1>
-        <div className="container mt-5">
-          <div className="product" style={pro}><br/>
-            <h5 className='title-table' style={text2}>All products listing</h5>
-            <form class="px-4 py-3">
-              <div class="mb-3">
-                <input type="text" class="form-control" style={insert} placeholder="find product here" />
-              </div>
-            </form>
-            <table className="table">
-              <thead>
-                <tr >
-                  <th scope="col">Product Name</th>
-                  <th scope="col">Price</th>
-                  <th scope="col">Category</th>
-                  <th scope="col">Photos</th>
-                  <th scope="col">Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                {
-                  products.map((product) => (
-                    <tr key={product.id}>
-                      <td>{product.title}</td>
-                      <td>${product.price}</td>
-                      <td>{product.category.name}</td>
-                      <td>
-                        <img src={product.images[0]} width={120} alt="" />
-                      </td>
-                      <td className="mx-auto p-2">
-                        <button type="button" className="btn btn-primary mx-3">Edit</button>
-                        <button type="button" className="btn btn-danger">Delete</button>
-                      </td>
-                    </tr>
-                  ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
+      <TbComponents/>
       </Layout>
     </>
   )
 }
-export async function getServerSideProps() {
-  const res = await fetch("https://api.escuelajs.co/api/v1/products");
-  const resp = await res.json();
-  return {
-    props: {
-      products: resp,
-    },
-  };
-}
-
-let text1 = {
-  marginLeft: "310px"
-}
-let text2 = {
-  marginLeft: "10px"
-}
-
-let pro = {
-  borderRadius: '20px',
-  backgroundColor: 'whitesmoke'
-}
-
-let insert = {
-  width: "15vw",
-  float: "right"
-}
-// let btn = {
-//   top:"10px",
-//   bottom: "10px"
-// }
