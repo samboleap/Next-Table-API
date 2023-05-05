@@ -1,14 +1,19 @@
-const {useState} = require('react');
+const {useState, useEffect} = require('react');
 const {default: Layout} = require('../../components/layout');
 import DataTable from 'react-data-table-component';
+import axios from 'axios';
 
 
 export default function TbProducts(){
-    const dataTable = 'https://api.escuelajs.co/api/v1/products'
     const [product, setProduct] = useState([])
-    fetch(dataTable)
-    .then(res=> res.json())
-    .then(items=> setProduct(items))
+    const [search, setSearch] = useState("");
+    const [newProducts, setNewProducts] = useState([]);
+    const products = async ()=>{
+        const res = await axios.get(`https://api.escuelajs.co/api/v1/products/`)
+        setProduct(res.data)
+        setNewProducts(res.data)
+    }
+    
 
     const columns = [
         {
@@ -30,7 +35,9 @@ export default function TbProducts(){
             name: 'Photos',
             images: 'images',
             selector: row =>
-            <img src={row.images} width={50} height={50}/>
+            <img src={row.images} width={100} style={{
+                borderRadius: '5px', margin: '5px',
+            }} />
         },
         {
             name:'Action',
@@ -46,16 +53,22 @@ export default function TbProducts(){
             ),
         },
     ]
-    function sortData(e){
-        const listItem = product.filter((row)=>{
-            return row.title.toLowerCase().includes(e.target.value.toLowerCase());
-        });
-        setProduct(listItem);
-    }
+
+useEffect(()=>{
+    products();
+},[])
+useEffect(()=>{
+    const result = product.filter(pro=>{
+        return pro.title.toLowerCase().match(search.toLowerCase());
+    });
+    setNewProducts(result);
+},[search])
+
     return (
-        <Layout product>
+        <Layout>
+            <h1 style={{marginLeft: "310px"}}>Product Collection - Table</h1>
             <div className="container mt-5">
-                <DataTable columns={columns} data={product}
+                <DataTable columns={columns} data={newProducts}
                 title="All Product Listing"
                 pagination
                 highlightOnHover
@@ -65,10 +78,12 @@ export default function TbProducts(){
                         <input 
                         className="rounded border-1"
                         placeholder="Find Products Here"
-                        type="text"
-                        onChange={sortData}
+                        value={search}
+                        onChange={(event)=> setSearch(event.target.value)}
                         style={{
-                            padding: 10
+                            width:'290px',
+                            padding: '1px 10px',
+                            fontSize: '20px'	
                         }}
                         />
                     </div>
